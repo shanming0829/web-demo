@@ -1,0 +1,27 @@
+version: "3.9"
+
+services:
+  frontend:
+    build:
+      context: .
+      dockerfile: frontend.Dockerfile
+    ports:
+      - "80:80"
+    volumes:
+      - "./nginx/nginx.conf:/etc/nginx/nginx.conf"
+      - "./nginx/proxy.conf:/etc/nginx/proxy.conf"
+    depends_on:
+      - backend
+
+  backend:
+    build:
+      context: .
+      dockerfile: backend.Dockerfile
+
+# Default 172.18.0.0/16 conflict with our env
+networks:
+  default:
+    ipam:
+      driver: default
+      config:
+        - subnet: 172.220.0.0/16
